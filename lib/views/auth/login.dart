@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:tharad/core/logic/helper_methods.dart';
 import 'package:tharad/core/ui/app_button.dart';
 import 'package:tharad/core/ui/app_image.dart';
 import 'package:tharad/core/ui/app_input.dart';
+import 'package:tharad/core/ui/app_login_or_register.dart';
+import 'package:tharad/generated/l10n.dart';
+import 'package:tharad/views/profile/profile.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -23,8 +27,8 @@ class _LoginViewState extends State<LoginView> {
         child: Form(
           key: formKey,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
+            padding: EdgeInsetsDirectional.symmetric(
+              horizontal: 20.w,
             ).copyWith(top: 60.h),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -32,14 +36,14 @@ class _LoginViewState extends State<LoginView> {
                 AppImage(imageUrl: 'logo.png', height: 58.h, width: 178.w),
                 SizedBox(height: 80.h),
                 Text(
-                  'إنشاء حساب جديد',
+                  S.of(context).login,
                   style: TextStyle(
                     fontSize: 22.sp,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(height: 12.h),
-                _Text(text: "البريد الإلكتروني"),
+                _Text(text: S.of(context).email),
                 SizedBox(height: 6.h),
                 AppInput(
                   hintText: 'example@gmail.com',
@@ -52,7 +56,7 @@ class _LoginViewState extends State<LoginView> {
                   },
                 ),
                 SizedBox(height: 12.h),
-                _Text(text: "كلمة المرور"),
+                _Text(text: S.of(context).password),
                 SizedBox(height: 6.h),
                 AppInput(
                   hintText: '******************',
@@ -79,14 +83,12 @@ class _LoginViewState extends State<LoginView> {
                           },
                           visualDensity: VisualDensity.compact,
                         ),
-                        const Text("تذكرني"),
+                        Text(S.of(context).remember_me),
                       ],
                     ),
                     TextButton(
-                      onPressed: () {
-                        // TODO: Forgot password action
-                      },
-                      child: const Text('هل نسيت كلمة المرور؟'),
+                      onPressed: () {},
+                      child: Text(S.of(context).forgot_password),
                     ),
                   ],
                 ),
@@ -94,33 +96,15 @@ class _LoginViewState extends State<LoginView> {
                 SizedBox(height: 40.h),
                 AppButton(
                   onPressed: () {
-                    if (formKey.currentState!.validate()) {}
+                    // if (formKey.currentState!.validate()) {}
+                    goTo(ProfileView());
                   },
-                  text: 'تسجيل الدخول',
-                  // color: Color(0xffD75D72),
+                  text: S.of(context).login,
                   height: 55.h,
                   width: 350.w,
                 ),
                 SizedBox(height: 12.h),
-                Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(text: 'ليس لديك حساب؟'),
-                      WidgetSpan(
-                        alignment: PlaceholderAlignment.middle,
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            ' إنشاء حساب جديد',
-                            style: TextStyle(color: Color(0xff5CC7A3)),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                AppLoginOrRegister(),
                 SizedBox(height: 16.h),
               ],
             ),

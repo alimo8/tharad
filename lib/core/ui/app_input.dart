@@ -31,12 +31,14 @@ class _AppInputState extends State<AppInput> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       keyboardType: widget.keyboardType,
       validator: widget.validator,
       textInputAction: TextInputAction.next,
       controller: widget.controller,
       obscureText: widget.isPassword && isShown,
       decoration: InputDecoration(
+        
         labelText: widget.labelText,
         labelStyle: TextStyle(color: Colors.grey),
         hintText: widget.hintText,

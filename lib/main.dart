@@ -3,9 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:tharad/core/logic/helper_methods.dart';
-import 'package:tharad/views/auth/otp.dart';
+import 'package:tharad/generated/l10n.dart';
+import 'package:tharad/views/auth/login.dart';
+
 import 'package:tharad/views/auth/register.dart';
-import 'package:tharad/views/profile/profile.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,8 +14,25 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+  static void setLocale(BuildContext context, Locale newLocale) {
+    _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
+    state?.setLocale(newLocale);
+  }
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Locale _locale = const Locale('ar');
+
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +43,15 @@ class MyApp extends StatelessWidget {
       child: Builder(
         builder: (context) {
           return MaterialApp(
-            locale: const Locale('ar', 'EG'), // اللغة العربية - مصر
-            supportedLocales: const [Locale('en', 'US'), Locale('ar', 'EG')],
-            localizationsDelegates: [
+            locale: _locale,
+            supportedLocales: const [Locale('ar'), Locale('en')],
+            localizationsDelegates: const [
+              S.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
+            // supportedLocales: S.delegate.supportedLocales,
             theme: ThemeData(
               fontFamily: 'Tajawal',
               appBarTheme: const AppBarTheme(
@@ -47,6 +67,8 @@ class MyApp extends StatelessWidget {
                 surfaceTintColor: Colors.transparent,
               ),
               inputDecorationTheme: InputDecorationTheme(
+                filled: true,
+                fillColor: Color(0xffF4F7F6),
                 enabledBorder: buildGreyBorder,
                 focusedBorder: buildGreyBorder,
                 errorBorder: buildGreyBorder,
@@ -55,7 +77,7 @@ class MyApp extends StatelessWidget {
             ),
             debugShowCheckedModeBanner: false,
             navigatorKey: navigatorKey,
-            home: ProfileView(),
+            home: LoginView(),
           );
         },
       ),
@@ -73,6 +95,6 @@ OutlineInputBorder get buildRedBorder {
 OutlineInputBorder get buildGreyBorder {
   return OutlineInputBorder(
     borderRadius: BorderRadius.circular(8),
-    borderSide: BorderSide(color: Colors.grey, width: 1),
+    borderSide: BorderSide(color: Color(0xffF0E6DE), width: 1),
   );
 }

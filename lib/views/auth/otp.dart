@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:tharad/core/logic/helper_methods.dart';
 import 'package:tharad/core/ui/app_button.dart';
 import 'package:tharad/core/ui/app_image.dart';
+import 'package:tharad/generated/l10n.dart';
+import 'package:tharad/views/profile/profile.dart';
 
 class OtpView extends StatelessWidget {
   const OtpView({super.key});
@@ -20,13 +23,13 @@ class OtpView extends StatelessWidget {
             AppImage(imageUrl: 'logo.png', height: 58.h, width: 178.w),
             SizedBox(height: 116.h),
             Text(
-              'Verify Code',
+              S.of(context).verification_code,
               style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8.h),
             Text(
               textAlign: TextAlign.center,
-              ' لاستكمال فتح حسابك ادخل رمز التحقق المرسل عبر البريد الإلكتروني',
+              S.of(context).verification_message,
               style: TextStyle(fontSize: 15.sp, color: Colors.grey),
             ),
             SizedBox(height: 40.h),
@@ -54,21 +57,24 @@ class OtpView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('55.55'),
-
                 Text.rich(
                   style: TextStyle(fontSize: 12.sp),
                   textAlign: TextAlign.end,
                   TextSpan(
                     children: [
-                      TextSpan(text: 'لم يصلك رمز؟ '),
+                      TextSpan(text: S.of(context).resend_code),
                       WidgetSpan(
                         alignment: PlaceholderAlignment.middle,
                         child: TextButton(
                           onPressed: () {
                             // Navigator.pop(context);
                           },
+                          style: TextButton.styleFrom(
+                            visualDensity: VisualDensity.compact,
+                            padding: EdgeInsets.zero,
+                          ),
                           child: Text(
-                            'إعادة ارسال',
+                            S.of(context).resend,
                             style: TextStyle(
                               color: Color(0xff5CC7A3),
                               fontSize: 12.sp,
@@ -83,8 +89,10 @@ class OtpView extends StatelessWidget {
             ),
             SizedBox(height: 40.h),
             AppButton(
-              onPressed: () {},
-              text: 'المتابعة',
+              onPressed: () {
+                goTo(ProfileView());
+              },
+              text: S.of(context).Continue,
               // color: Color(0xffD75D72),
               height: 55.h,
               width: 350.w,

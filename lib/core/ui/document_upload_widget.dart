@@ -1,85 +1,82 @@
-import 'dart:ui';
-
+import 'dart:io';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tharad/core/ui/app_image.dart';
+import 'package:tharad/generated/l10n.dart';
 
-class DocumentUploadWidget extends StatelessWidget {
+class DocumentUploadWidget extends StatefulWidget {
   const DocumentUploadWidget({super.key});
+
+  @override
+  State<DocumentUploadWidget> createState() => _DocumentUploadWidgetState();
+}
+
+class _DocumentUploadWidgetState extends State<DocumentUploadWidget> {
+  final ImagePicker _imagePicker = ImagePicker();
+  XFile? _pickedImage;
+
+  Future<void> _pickImageFromGallery() async {
+    final image = await _imagePicker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+
+    if (image != null) {
+      setState(() => _pickedImage = image);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: CustomPaint(
-        painter: DashedBorderPainter(
-          color: Colors.grey,
-          strokeWidth: 2,
-          dashWidth: 6,
-          dashSpace: 4,
-          radius: 12,
-        ),
-        child: Container(
-          height: 105,
-          width: 350,
-          alignment: Alignment.center,
-          child: const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AppImage(imageUrl: 'camera.svg', height: 30),
-              SizedBox(height: 10),
-              Text(
-                textAlign: TextAlign.center,
-                'الملفات المسموح بيها :  JPEG , PNG \n الحد الاقصي : 5MB',
-                style: TextStyle(fontSize: 10, color: Colors.grey),
-              ),
-            ],
+      child: GestureDetector(
+        onTap: _pickImageFromGallery,
+        child: DottedBorder(
+          options: RoundedRectDottedBorderOptions(
+            radius: Radius.circular(10.r),
+            dashPattern: const [8, 4],
+            color: Colors.grey,
+            strokeWidth: 2,
+          ),
+          child: Container(
+            alignment: Alignment.center,
+            child: _pickedImage == null
+                ? Padding(
+                    padding: EdgeInsets.all(12.r),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const AppImage(imageUrl: 'camera.svg', height: 30),
+                        const SizedBox(height: 10),
+                        Text(
+                          S.of(context).upload_note,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: 260.w,
+                        maxHeight: 180.h,
+                      ),
+                      child: Image.file(
+                        File(_pickedImage!.path),
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
           ),
         ),
       ),
     );
   }
-}
-
-class DashedBorderPainter extends CustomPainter {
-  final Color color;
-  final double strokeWidth;
-  final double dashWidth;
-  final double dashSpace;
-  final double radius;
-
-  DashedBorderPainter({
-    required this.color,
-    this.strokeWidth = 2,
-    this.dashWidth = 5,
-    this.dashSpace = 3,
-    this.radius = 0,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke;
-
-    final path = Path()
-      ..addRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(0, 0, size.width, size.height),
-          Radius.circular(radius),
-        ),
-      );
-
-    final pathMetrics = path.computeMetrics();
-    for (final metric in pathMetrics) {
-      double distance = 0.0;
-      while (distance < metric.length) {
-        final segment = metric.extractPath(distance, distance + dashWidth);
-        canvas.drawPath(segment, paint);
-        distance += dashWidth + dashSpace;
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
